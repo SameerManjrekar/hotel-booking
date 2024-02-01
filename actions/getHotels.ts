@@ -1,4 +1,5 @@
 import prisma from "@/lib/prismaDB";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const getHotels = async (searchParams: {
   title: string;
@@ -6,6 +7,7 @@ export const getHotels = async (searchParams: {
   state: string;
   city: string;
 }) => {
+  noStore();
   try {
     const { title, country, state, city } = searchParams;
     const hotels = await prisma.hotel.findMany({

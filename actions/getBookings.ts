@@ -1,6 +1,8 @@
 import prisma from "@/lib/prismaDB";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const getBookings = async (hotelId: string) => {
+  noStore();
   try {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -13,7 +15,7 @@ export const getBookings = async (hotelId: string) => {
         },
       },
     });
-    
+
     if (!bookings) return null;
 
     return bookings;

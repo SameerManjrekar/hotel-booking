@@ -1,6 +1,8 @@
 import prisma from "@/lib/prismaDB";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const getHotelById = async (hotelId: string) => {
+  noStore();
   try {
     const hotel = await prisma.hotel.findUnique({
       where: {

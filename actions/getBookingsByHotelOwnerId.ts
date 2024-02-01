@@ -1,7 +1,9 @@
 import prisma from "@/lib/prismaDB";
 import { auth } from "@clerk/nextjs";
+import { unstable_noStore as noStore } from "next/cache";
 
 export async function getBookingsByHotelOwnerId() {
+  noStore();
   try {
     const { userId } = auth();
 
