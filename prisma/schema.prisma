@@ -1,0 +1,95 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Hotel {
+  id                  String   @id @default(uuid())
+  userId              String
+  title               String   @db.Text
+  description         String   @db.VarChar(655)
+  image               String
+  country             String
+  state               String
+  city                String
+  locationDescription String   @db.VarChar(800)
+  gym                 Boolean  @default(false)
+  spa                 Boolean  @default(false)
+  bar                 Boolean  @default(false)
+  laundry             Boolean  @default(false)
+  restaurant          Boolean  @default(false)
+  shopping            Boolean  @default(false)
+  freeParking         Boolean  @default(false)
+  bikeRental          Boolean  @default(false)
+  freeWifi            Boolean  @default(false)
+  movieNights         Boolean  @default(false)
+  swimmingPool        Boolean  @default(false)
+  coffeeShop          Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  rooms    Room[]
+  bookings Booking[]
+
+  // @@fulltext([title])
+}
+
+model Room {
+  id             String  @id @default(uuid())
+  title          String
+  description    String  @db.VarChar(655)
+  bedCount       Int     @default(0)
+  guestCount     Int     @default(0)
+  bathroomCount  Int     @default(0)
+  kingBed        Int     @default(0)
+  queenBed       Int     @default(0)
+  hotelId        String
+  image          String
+  breakfastPrice Int
+  roomPrice      Int
+  roomService    Boolean @default(false)
+  TV             Boolean @default(false)
+  balcony        Boolean @default(false)
+  freeWifi       Boolean @default(false)
+  cityView       Boolean @default(false)
+  oceanView      Boolean @default(false)
+  forestView     Boolean @default(false)
+  mountainView   Boolean @default(false)
+  airContioner   Boolean @default(false)
+  soundProof     Boolean @default(false)
+  Hotel          Hotel?  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  Booking Booking[]
+
+  @@index([hotelId])
+}
+
+model Booking {
+  id                String   @id @default(uuid())
+  userName          String
+  userEmail         String
+  userId            String
+  roomId            String
+  hotelId           String
+  hotelOwnerId      String
+  startDate         DateTime
+  endDate           DateTime
+  breakfastIncluded Boolean
+  currency          String
+  totalPrice        Int
+  paymentStatus     Boolean  @default(false)
+  paymentIntentId   String   @unique
+  bookedAt          DateTime @default(now())
+
+  Hotel Hotel? @relation(fields: [hotelId], references: [id])
+  Room  Room?  @relation(fields: [roomId], references: [id])
+
+  @@index([hotelId])
+  @@index([roomId])
+}
